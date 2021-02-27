@@ -41,9 +41,14 @@ function newGame() {
     // let letters = document.querySelectorAll('.letter')
     newWord.filter((letter) => common.includes(letter))
     .forEach((letter) => {
-        document.querySelector(`.${letter}`).innerText = letter.toUpperCase()
+        const exists = document.querySelector(`.${letter}`)
+        exists.innerText = letter.toUpperCase()
+        exists.classList.remove('blank')
         console.log(letter)
     })
+
+    let blank = document.querySelectorAll('.blank')
+    blank.addEventListener('click')
 }
 
 let startButton = document.getElementById('start')
