@@ -2,8 +2,8 @@
 const body = document.body
 const main = document.createElement('div')
 main.setAttribute('id', "screen");
-main.style.width = '90'
-main.style.padding = '120px'
+main.style.width = '100'
+main.style.padding = '70px 20px 20px 20px'
 body.appendChild(main)
 let screen = document.getElementById('screen');
 
@@ -26,20 +26,29 @@ function sessionStart() {
         blank.setAttribute('id', `${idx}`);
         blank.setAttribute('class', `blank letter ${letter}`)
         blank.innerText = '    _    '
-        blank.style.padding = '20px'
-        blank.style.fontSize = '5vh'
+        blank.style.padding = '50px'
+        blank.style.fontSize = '12vh'
         screen.appendChild(blank)
     })
      
 }
 
 // turns span tag to form when empty letter is clicked
-function guessForm() {
-    console.log('guess!')
+openGuessForm = (e) => {
+    console.log('guess!', e.target.id)
+    let guessing = document.getElementById(e.target.id);
+    guessing.classList.add('badge-light')
+    // guessing.classList.add('badge')
+
+    // only guess for one letter at a time
+    let blank = document.querySelectorAll('.blank')
+    blank.forEach(letter => letter.removeEventListener('click', openGuessForm))
 }
 
 // button starts gameplay
-function newGame() {
+newGame = (e) => {
+    startButton.style.display = 'none'
+
     const common = ['r', 's', 't', 'l', 'n', 'e']
     // console.log('whoa nelly')
     // let letters = document.querySelectorAll('.letter')
@@ -52,7 +61,7 @@ function newGame() {
     })
 
     let blank = document.querySelectorAll('.blank')
-    blank.forEach(letter => letter.addEventListener('click', guessForm))
+    blank.forEach(letter => letter.addEventListener('click', openGuessForm))
 }
 
 let startButton = document.getElementById('start')
