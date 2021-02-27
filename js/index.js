@@ -33,6 +33,10 @@ function sessionStart() {
      
 }
 
+// turns span tag to form when empty letter is clicked
+function guessForm() {
+    console.log('guess!')
+}
 
 // button starts gameplay
 function newGame() {
@@ -48,7 +52,7 @@ function newGame() {
     })
 
     let blank = document.querySelectorAll('.blank')
-    blank.addEventListener('click')
+    blank.forEach(letter => letter.addEventListener('click', guessForm))
 }
 
 let startButton = document.getElementById('start')
