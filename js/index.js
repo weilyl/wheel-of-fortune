@@ -8,7 +8,7 @@ body.appendChild(main)
 let screen = document.getElementById('screen');
 
 // game defaults to a round
-let newWord = getRandomWord();
+let newWord = getRandomWord().split('');
 
 sessionStart()
 
@@ -17,13 +17,14 @@ function sessionStart() {
     button.innerText = 'Start Game'
     button.setAttribute('id', 'start')
     button.setAttribute('type', 'button')
+    button.setAttribute('class', 'btn btn-success')
     body.appendChild(button)
 
 
-    newWord.split('').forEach((letter, idx) => {
+    newWord.forEach((letter, idx) => {
         const blank = document.createElement('span');
-        blank.setAttribute('id', `${idx} ${letter}`);
-        blank.setAttribute('class', 'blank letter')
+        blank.setAttribute('id', `${idx}`);
+        blank.setAttribute('class', `blank letter ${letter}`)
         blank.innerText = '    _    '
         blank.style.padding = '20px'
         blank.style.fontSize = '5vh'
@@ -32,10 +33,18 @@ function sessionStart() {
      
 }
 
-function newGame() {
-    newWord = getRandomWord()
-    newWord.split('').forEach(letter => {console.log(letter)})
 
+// button starts gameplay
+function newGame() {
+    const common = ['r', 's', 't', 'l', 'n', 'e']
+    // console.log('whoa nelly')
+    // let letters = document.querySelectorAll('.letter')
+    newWord.filter((letter) => common.includes(letter))
+    .forEach((letter) => {
+        document.querySelector(`.${letter}`).innerText = letter.toUpperCase()
+        console.log(letter)
+    })
 }
 
-// newGame()
+let startButton = document.getElementById('start')
+startButton.addEventListener('click', newGame)
