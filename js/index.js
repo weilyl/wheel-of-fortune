@@ -4,8 +4,9 @@ const main = document.createElement('div')
 main.setAttribute('id', "screen");
 main.setAttribute('class', 'row');
 main.style.textAlign = 'center';
-main.style.width = '95'
-main.style.padding = '70px 20px 20px 20px'
+// main.style.width = '95'
+main.style.padding = '20px 0'
+main.style.margin = '10px'
 body.appendChild(main)
 let screen = document.getElementById('screen');
 
@@ -20,6 +21,7 @@ function sessionStart() {
     button.setAttribute('id', 'start')
     button.setAttribute('type', 'button')
     button.setAttribute('class', 'btn btn-success')
+    button.style.margin = '20px'
     body.appendChild(button)
 
 
@@ -47,7 +49,85 @@ function sessionStart() {
 
 // when blank letter is clicked
 openGuessForm = () => {
-    // // misunderstood instructions :(
+    const numConsonants = 3;
+    const numVowels = 1;
+    const letterForm = document.createElement('form');
+    letterForm.style.margin = '20px'
+    letterForm.setAttribute('class', 'container-fluid row')
+
+    function makeFormGroups (cons=3, vowels=1) {
+        const colSize = 12/(cons+vowels)
+
+        for (let i = 1; i <= cons; i++) {
+            const consGroup1 = document.createElement('div');
+            consGroup1.setAttribute('class', `form-group col-sm col-${colSize} my-1`);
+
+            const consLabel1 = document.createElement('label');
+            consLabel1.setAttribute('for', `consonant${i}`)
+            let ith;
+            switch (i) {
+                case 1:
+                    ith = "First";
+                    break;
+                case 2:
+                    ith = "Second";
+                    break;
+                case 3:
+                    ith = "Third";
+                    break;
+            }
+            consLabel1.innerText = `${ith} Consonant`
+            consGroup1.appendChild(consLabel1);
+        
+            const consInput1 = document.createElement('input');
+            consInput1.setAttribute('type', 'text');
+            consInput1.setAttribute('id', `consonant${i}`);
+            consInput1.setAttribute('maxlength', '1');
+            consInput1.setAttribute('class', 'form-control');
+            consInput1.setAttribute('placeholder', `${ith} consonant`);
+        
+            consGroup1.appendChild(consInput1);
+            letterForm.appendChild(consGroup1);
+        }
+
+        for (let i = 1; i <= vowels; i++) {
+            const vowelGroup1 = document.createElement('div');
+            vowelGroup1.setAttribute('class', `form-group col-sm col-${colSize} my-1`);
+
+            const vowelLabel1 = document.createElement('label');
+            vowelLabel1.setAttribute('for', `vowel${i}`)
+            let ith;
+            switch (i) {
+                case 1:
+                    ith = "First";
+                    break;
+                case 2:
+                    ith = "Second";
+                    break;
+                case 3:
+                    ith = "Third";
+                    break;
+            }
+            vowelLabel1.innerText = `${ith} Vowel`
+            vowelGroup1.appendChild(vowelLabel1);
+        
+            const vowelInput1 = document.createElement('input');
+            vowelInput1.setAttribute('type', 'text');
+            vowelInput1.setAttribute('id', `vowel${i}`);
+            vowelInput1.setAttribute('maxlength', '1');
+            vowelInput1.setAttribute('class', 'form-control');
+            vowelInput1.setAttribute('placeholder', `${ith} vowel`);
+        
+            vowelGroup1.appendChild(vowelInput1);
+            letterForm.appendChild(vowelGroup1);
+        }
+    }
+    // const consGroup1 = document.createElement('div');
+    // consGroup1.setAttribute('class', 'form-group col-sm my-1');
+    // letterForm.appendChild(consGroup1)
+    makeFormGroups(numConsonants, numVowels);
+
+    body.appendChild(letterForm);
 
 }
 
@@ -90,6 +170,7 @@ newGame = (e) => {
         })
         
     }
+    openGuessForm();
 }
 
 // START GAME
