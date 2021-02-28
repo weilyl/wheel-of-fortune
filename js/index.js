@@ -92,6 +92,9 @@ newGame = (e) => {
         // // one day I will understand Promises and debug this
         // // to show the tiles like on the show
         // // today is not that day
+        // https://stackoverflow.com/questions/45498873/add-a-delay-after-executing-each-iteration-with-foreach-loop 
+        // https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelectorAll
+        // http://thecodebarbarian.com/basic-functional-programming-with-async-await.html
 
         // async function showRSTLNE(common) {
             // lightUpTiles(common)
