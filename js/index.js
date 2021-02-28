@@ -10,8 +10,8 @@ body.appendChild(main)
 let screen = document.getElementById('screen');
 
 // game defaults to a round
-let newWord = getRandomWord().split('');
 
+let newWord = getRandomWord().split('');
 document.onload = sessionStart()
 function sessionStart() {
 
@@ -46,37 +46,12 @@ function sessionStart() {
 }
 
 // when blank letter is clicked
-openGuessForm = (e) => {
+openGuessForm = () => {
     // // misunderstood instructions :(
 
 }
 
 const interval = 550;
-
-// function lightUpTiles(arr) {
-//         arr.forEach((letter, idx) => {
-//         const exists = document.querySelector(`.${letter}`)
-//         setTimeout(()=> {
-//             exists.setAttribute('class', 'badge-light')
-//         }, idx*interval)
-//     })
-// }
-
-// function showLetters(arr) {
-//     return new Promise(resolve => {
-//         setTimeout(() => resolve(
-//             arr.forEach((letter, idx) => {
-//                 setTimeout(()=> {
-//                     let exists = document.querySelector(`.${letter}.blank`)
-//                     exists.innerText = letter.toUpperCase()
-//                     exists.style.color = 'black';
-//                     exists.classList.remove('blank')
-//                     console.log(letter)
-//                 }, idx * interval);
-//             })
-//         ), interval)
-//     })
-// }
 
 // button starts gameplay
 newGame = (e) => {
@@ -89,22 +64,11 @@ newGame = (e) => {
     let common = newWord.filter((letter) => rstlne.includes(letter))
     
     if (common.length >= 1) {
-        // // one day I will understand Promises and debug this
-        // // to show the tiles like on the show
-        // // today is not that day
-        // https://stackoverflow.com/questions/45498873/add-a-delay-after-executing-each-iteration-with-foreach-loop 
-        // https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelectorAll
-        // http://thecodebarbarian.com/basic-functional-programming-with-async-await.html
-
-        // async function showRSTLNE(common) {
-            // lightUpTiles(common)
-        //     await showLetters(common)
-        // }
-        // showRSTLNE(common)
-
 
         common.forEach((letter, idx) => {
             const exists = document.querySelector(`.${letter}.blank`)
+            // remove blank class so duplicate letters appear 
+            exists.classList.remove('blank')
             
             // light up tiles
             setTimeout(() => {
@@ -119,18 +83,13 @@ newGame = (e) => {
                     // letters appear
                     exists.innerText = letter.toUpperCase()
                     exists.style.color = 'black';
-                    exists.classList.remove('blank')
+                    // exists.classList.remove('blank')
                 }, interval)
                 
-                console.log(letter)
             }, idx * interval);
         })
         
-        
     }
-    // blanks left are clickable for guessing
-    let blank = document.querySelectorAll('.blank')
-    blank.forEach(letter => letter.addEventListener('click', openGuessForm))
 }
 
 // START GAME
