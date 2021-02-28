@@ -12,11 +12,11 @@ let screen = document.getElementById('screen');
 // game defaults to a round
 let newWord = getRandomWord().split('');
 
-sessionStart()
-
+document.onload = sessionStart()
 function sessionStart() {
+
     const button = document.createElement('button');
-    button.innerText = 'Start Game'
+    button.innerText = 'Start Bonus Round'
     button.setAttribute('id', 'start')
     button.setAttribute('type', 'button')
     button.setAttribute('class', 'btn btn-success')
