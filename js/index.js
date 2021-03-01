@@ -299,7 +299,7 @@ validateLetterForm = (e) => {
                                     congrats.innerText = `Congratulations, you guessed it! The word was ${newWord.join('')}!`
                                     guessing.appendChild(congrats)
                                 }
-                            },idx*2*interval)
+                            },idx*5*interval)
                         }
                     })
                 } else {
@@ -309,8 +309,8 @@ validateLetterForm = (e) => {
                     noGuesses.setAttribute('class', 'lead');
                     noGuesses.innerText = 'Sorry, none of your guessed letters were correct. See if you can get the whole word with what you have!'
                     guessing.appendChild(noGuesses);
-                    setTimeout(() => {guessing.innerText = ''}, 750)
-                    setTimeout(openGuessWord, 1250);
+                    setTimeout(() => {guessing.innerText = ''}, 2050)
+                    setTimeout(openGuessWord, 2550);
                 }
                 this.removeEventListener('keydown', validateLetterForm);
             }
@@ -358,17 +358,15 @@ validateWordForm = (e) => {
             congrats.setAttribute('class', 'lead');
             congrats.innerText = `Congratulations, you guessed it! The word was ${e.target.value.toUpperCase()}!`
             guessing.appendChild(congrats)
-            // e.preventDefault();
-            // this.removeEventListener('keydown', validateLettersForm)
+            
             this.removeEventListener('keydown', submitLettersForm)
         } else {
             guessing.innerText='';
             const lost = document.createElement('p');
             lost.setAttribute('class', 'lead');
-            lost.innerText = `I'm sorry, ${e.target.value.toUpperCase()} was NOT the right answer. You don't win this round.`
+            lost.innerText = `I'm sorry, ${e.target.value.toUpperCase()} was NOT the right answer. You don't win this round. The word was ${newWord.join('').toUpperCase()}`
             guessing.appendChild(lost);
-            // e.preventDefault();
-            // this.removeEventListener('keydown', validateLettersForm)
+        
             this.removeEventListener('keydown', submitLettersForm)
         }
     }
