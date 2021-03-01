@@ -399,8 +399,9 @@ validateWordForm = (e) => {
     if (e.key === 'Enter') {
         
         if (e.target.value.toLowerCase() === newWord.join('').toLowerCase()) {
-            guessing.innerText='';
-            
+            e.preventDefault();
+
+            // guessing.innerText='';
             
             const correctWord = e.target.value.split('');
             console.log(correctWord, e.target.value.length)
@@ -410,8 +411,10 @@ validateWordForm = (e) => {
                 // remove blank class so duplicate letters appear 
                 // letters appear
                 if(final) {
+                    e.preventDefault();
                     final.innerText = letter.toUpperCase()
                     final.style.color = 'black';
+                    final.classList.remove('blank')
                 }
             })
             
