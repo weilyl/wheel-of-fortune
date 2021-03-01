@@ -39,9 +39,22 @@ function sessionStart() {
     const cardWidth = defaultCardWidth > calculatedCardWidth ? `${calculatedCardWidth}vw`: `${defaultCardWidth}vw`;
     const cardFontSize = defaultFontSize > calculatedFontSize ? `${calculatedFontSize}vw` : `${defaultFontSize}vw`;
 
-    const rowTop = document.createElement('div');
-    rowTop.setAttribute('class', 'd-flex justify-content-center jumbotron-fluid');
-    screen.appendChild(rowTop)
+    // const rowTop = document.createElement('div');
+    // rowTop.setAttribute('class', 'd-flex justify-content-center');
+    // rowTop.setAttribute('id', 'row-top');
+    // screen.appendChild(rowTop)
+    
+    // let i = 0;
+
+    // while (i < 12) {
+    //     rowTop.appendChild(createTile(cardWidth))
+    //     i++
+    // }
+
+    // const rowMain = document.createElement('div');
+    // rowMain.setAttribute('class', 'd-flex justify-content-center');
+    // rowMain.setAttribute('id', 'row-main');
+    // screen.appendChild(rowMain)
 
     newWord.forEach((letter, idx) => {
         // create empty card
@@ -67,7 +80,28 @@ function sessionStart() {
      
 }
 // create tile
-function createTile(int) {
+function createTile(cardWidth, fontSize) {
+    const card = document.createElement('div');
+    card.setAttribute('class', 'card text-center');
+    // 
+    // if default bigger than calculated, use default
+    card.style.width = cardWidth;
+    card.style.textAlign = 'center';
+
+    // span tag as empty card body
+    const blank = document.createElement('img');
+    // blank.setAttribute('id', `${idx}`);
+    blank.setAttribute('class', `tile card-body`)
+    blank.setAttribute('src', 'assets/Wheel-of-Fortune-Puzzle-Board-Tile-Nadscope99-DA.jpg')
+    blank.style.width = '100%'
+    blank.style.filter = url('#teal-white');
+    // blank.innerText = '_'
+    // blank.style.padding = '5px';
+    // blank.style.fontSize = cardFontSize
+    // blank.style.color = 'rgba(0, 0, 0, 0)';
+
+    card.appendChild(blank)
+    return card
     // create card
     // card background = logo
     // https://css-tricks.com/almanac/properties/f/filter/
