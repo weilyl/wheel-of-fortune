@@ -15,6 +15,7 @@ let guessing = document.createElement('section');
 guessing.setAttribute('class', 'container d-flex justify-content-center')
 body.appendChild(guessing)
 const known = document.createElement('footer');
+known.setAttribute('class', 'fixed-bottom row mx-0')
 body.appendChild(known);
 
 // game defaults to a new bonus round
@@ -91,7 +92,7 @@ newGame = (e) => {
     // show common letters on bottom
     const freebies = document.createElement('h3');
     freebies.innerText = rstlne.join(' ').toUpperCase();
-    freebies.setAttribute('class', 'col pl-2 text-left')
+    freebies.setAttribute('class', 'col pl-2 ml-auto text-left')
     known.appendChild(freebies)
     
     // common letters appear if present
@@ -285,8 +286,11 @@ validateLetterForm = (e) => {
     
     if (valid.every(validity => validity === true) && valid.length === guessForms.length) {
         const submitPrompt = document.createElement('p');
-        submitPrompt.setAttribute('class', 'lead');
+        submitPrompt.setAttribute('class', 'lead col');
         submitPrompt.innerText = `Hit 'ENTER' to submit your guesses`
+        const promptDiv = document.createElement('div')
+        promptDiv.setAttribute('class', 'row jumbotron-fluid');
+        // promptDiv.appendChild(submitPrompt)
         guessing.appendChild(submitPrompt)
         
         function submitLettersForm (e) {
@@ -297,7 +301,7 @@ validateLetterForm = (e) => {
 
                 const submittedLetters = document.createElement('h3');
                 submittedLetters.innerText = `${guessedLetters.join(' ').toUpperCase()}`
-                submittedLetters.setAttribute('class', 'text-right col pr-2')
+                submittedLetters.setAttribute('class', 'text-right col pr-2 mr-auto')
                 known.appendChild(submittedLetters)
 
                 const correctLetters = [];
