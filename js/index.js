@@ -15,8 +15,10 @@ let guessing = document.createElement('section');
 guessing.setAttribute('class', 'container d-flex justify-content-center')
 body.appendChild(guessing)
 const known = document.createElement('footer');
-known.setAttribute('class', 'fixed-bottom row mx-0')
+known.setAttribute('class', 'fixed-bottom row mx-0 pb-5')
 body.appendChild(known);
+body.style.backgroundImage = "url('../assets/305-3-59733_wheel-of-fortune-blank.png')"
+body.style.backgroundPosition = 'cover'
 
 // game defaults to a new bonus round
 
