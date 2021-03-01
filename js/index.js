@@ -285,7 +285,7 @@ validateLetterForm = (e) => {
     
     if (valid.every(validity => validity === true) && valid.length === guessForms.length) {
         const submitPrompt = document.createElement('p');
-        submitPrompt.setAttribute('class', 'lead row');
+        submitPrompt.setAttribute('class', 'lead');
         submitPrompt.innerText = `Hit 'ENTER' to submit your guesses`
         guessing.appendChild(submitPrompt)
         
@@ -397,42 +397,34 @@ openGuessWord = (e) => {
 
 validateWordForm = (e) => {
     if (e.key === 'Enter') {
-        // e.preventDefault();
-
+        
         if (e.target.value.toLowerCase() === newWord.join('').toLowerCase()) {
-
-            const correctWord = e.target.value.split('');
-            correctWord.forEach((letter, idx) => {
-                const exists = document.querySelector(`.${letter}.blank`)
-            // remove blank class so duplicate letters appear 
-            exists.classList.remove('blank')
-            
-            // light up tiles
-            setTimeout(() => {
-                exists.setAttribute('class', 'badge-light')
-            }, idx*interval);
-
-            // letters appear
-            setTimeout(()=> {
-                setTimeout(() => {
-                    // light goes away
-                    exists.classList.remove('badge-light')
-                    // letters appear
-                    exists.innerText = letter.toUpperCase()
-                    exists.style.color = 'black';
-                    // exists.classList.remove('blank')
-                }, interval)
-                
-            }, idx * interval);
-            })
-
             guessing.innerText='';
-            const congrats = document.createElement('p');
-            congrats.setAttribute('class', 'lead');
-            congrats.innerText = `Congratulations, you guessed it! The word was ${e.target.value.toUpperCase()}!`
-            guessing.appendChild(congrats)
+            
+            
+            const correctWord = e.target.value.split('');
+            console.log(correctWord, e.target.value.length)
+            correctWord.forEach((letter) => {
+                const final = document.querySelector(`.${letter}.blank`)
+                console.log(final);
+                // remove blank class so duplicate letters appear 
+                // letters appear
+                if(final) {
+                    final.innerText = letter.toUpperCase()
+                    final.style.color = 'black';
+                }
+            })
+            
+            setTimeout(()=> {
+                const congrats = document.createElement('p');
+                congrats.setAttribute('class', 'lead');
+                congrats.innerText = `Congratulations, you guessed it! The word was ${e.target.value.toUpperCase()}!`
+                guessing.appendChild(congrats)
+            }, 250)
+            
             
             this.removeEventListener('keydown', submitLettersForm)
+
         } else {
             guessing.innerText='';
             const lost = document.createElement('p');
