@@ -7,6 +7,8 @@ main.style.textAlign = 'center';
 // main.style.width = '1rem'
 main.style.padding = '20px 0'
 main.style.margin = '10px'
+const rowTop = document.createElement('div');
+rowTop.setAttribute('class', 'd-flex justify-content-center')
 body.appendChild(main)
 let screen = document.getElementById('screen');
 let guessing = document.createElement('section');
