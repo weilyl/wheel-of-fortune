@@ -73,6 +73,8 @@ const vowelsStr = 'aiou';
 const rstlneStr = 'rstlne';
 const consonantRegex = new RegExp(`(?:(?![${vowelsStr+rstlneStr}])[a-z])`, `i`)
 const vowelRegex = new RegExp(`(?:(?![${rstlneStr}])[${vowelsStr}])`, `i`)
+const guessedLetters = [];
+let guessedWord;
 // https://stackoverflow.com/questions/44771741/regex-any-alphabet-except-e
 
 // button starts gameplay
@@ -121,7 +123,8 @@ openGuessForm = () => {
     const numConsonants = 3;
     const numVowels = 1;
     const form = document.createElement('form');
-    form.setAttribute('class', 'needs-validation');
+    form.setAttribute('class', 'guess-letters');
+    form.addEventListener('keydown', validateLetterForm);
     const letterForm = document.createElement('div');
     letterForm.style.margin = '20px'
     letterForm.setAttribute('class', 'row')
@@ -155,7 +158,7 @@ openGuessForm = () => {
             consInput1.setAttribute('type', 'text');
             consInput1.setAttribute('id', `consonant${i}`);
             consInput1.setAttribute('maxlength', '1');
-            consInput1.setAttribute('class', 'form-control');
+            consInput1.setAttribute('class', 'form-control guess-letter');
             consInput1.setAttribute('placeholder', `${ith} consonant`);
             consInput1.required;
             consInput1.addEventListener('keydown', validateLetterGuess)
@@ -189,7 +192,7 @@ openGuessForm = () => {
             vowelInput1.setAttribute('type', 'text');
             vowelInput1.setAttribute('id', `vowel${i}`);
             vowelInput1.setAttribute('maxlength', '1');
-            vowelInput1.setAttribute('class', 'form-control');
+            vowelInput1.setAttribute('class', 'form-control guess-letter');
             vowelInput1.setAttribute('placeholder', `${ith} vowel`);
             vowelInput1.required;         
             vowelInput1.addEventListener('keydown', validateLetterGuess)
@@ -210,10 +213,12 @@ validateLetterGuess = (e) => {
         if(e.target.id.includes('consonant')) {
             if (consonantRegex.test(e.key)) {
                 e.target.value = e.key.toUpperCase();
+                guessedLetters.push(e.key.toLowerCase());
+                console.log(typeof e.key);
+                console.log(typeof e.target.value);
+                console.log(guessedLetters, e.key, e.target.value);
                 e.target.setAttribute('readonly', 'true');
                 e.target.setAttribute('disabled', "true");
-            } else if (!consonantRegex.test(e.key)) {
-                e.target.value = 'Already guessed';
             } else {
                 e.target.value = 'Try again';
             }
@@ -222,16 +227,136 @@ validateLetterGuess = (e) => {
         else if (e.target.id.includes('vowel')) {
             if (vowelRegex.test(e.key)) {
                 e.target.value = e.key.toUpperCase();
+                guessedLetters.push(e.key.toLowerCase());
                 e.target.setAttribute('readonly', 'true');
                 e.target.setAttribute('disabled', "true");
-            } else if (!vowelRegex.test(e.key)) {
-                e.target.value = 'Already guessed';
             } else {
                 e.target.value = 'Try again';
             }
         }
     }
     
+}
+
+validateLetterForm = (e) => {
+    const guessForms = document.querySelector('.guess-letters').querySelector('.row').querySelectorAll('.form-group')
+    const valid = [];
+    guessForms.forEach(form => {
+        // console.log(form.querySelector('input').attributes)
+        if ('disabled' in form.querySelector('input').attributes) {
+            valid.push(true);
+        }
+    })
+    
+    if (valid.every(validity => validity === true) && valid.length === guessForms.length) {
+        console.log('submit that form!')
+        function submitLettersForm (e) {
+            if (e.key === 'Enter') {
+                guessing.innerText = '';
+                const correctLetters = [];
+                newWord.forEach((chc) => {
+                    if(guessedLetters.includes(chc.toLowerCase())) {
+                        correctLetters.push(chc)
+                    }
+                }) // why didn't filter work here??
+                console.log('why empty', newWord, guessedLetters, correctLetters)
+
+                if (correctLetters.length >= 1) {
+                    correctLetters.forEach((letter, idx) => {
+                        const exists = document.querySelector(`.${letter}.blank`)
+                        // remove blank class so duplicate letters appear 
+                        exists.classList.remove('blank')
+                        
+                        // light up tiles
+                        setTimeout(() => {
+                            exists.setAttribute('class', 'badge-light')
+                        }, idx*interval);
+
+                        // common letters appear
+                        setTimeout(()=> {
+                            setTimeout(() => {
+                                // light goes away
+                                exists.classList.remove('badge-light')
+                                // letters appear
+                                exists.innerText = letter.toUpperCase()
+                                exists.style.color = 'black';
+                            }, interval)
+                            
+                        }, idx * interval);
+
+                        if (idx === correctLetters.length-1) {
+                            setTimeout(()=> {
+                                if (document.querySelectorAll('.blank').length > 0) {
+                                    openGuessWord()
+                                } else {
+                                    const congrats = document.createElement('p');
+                                    congrats.setAttribute('class', 'lead');
+                                    congrats.innerText = `Congratulations, you guessed it! The word was ${e.target.value.toUpperCase()}!`
+                                    guessing.appendChild(congrats)
+                                }
+                            },idx*2*interval)
+                        }
+                    })
+                } else {
+                    const noGuesses = document.createElement('p');
+                    noGuesses.setAttribute('class', 'lead');
+                    noGuesses.innerText = 'Sorry, none of your guessed letters were correct. See if you can get the whole word with what you have!'
+                    guessing.appendChild(noGuesses);
+                    setTimeout(openGuessForm, 750);
+                }
+                this.removeEventListener('keydown', validateLetterForm);
+                this.removeEventListener('keydown', submitLettersForm)
+            }
+        }
+        this.addEventListener('keydown', submitLettersForm)
+    }
+}
+
+openGuessWord = (e) => {
+    guessing.innerText = ''
+    const form = document.createElement('form');
+    form.setAttribute('class', 'guess-word-form');
+    form.addEventListener('keydown', validateWordForm);
+
+    const wordGroup = document.createElement('div');
+    wordGroup.setAttribute('class', `form-group col-md`);
+    form.appendChild(wordGroup);
+
+    const wordLabel = document.createElement('label');
+    wordLabel.setAttribute('for', `guess-word`);
+    wordLabel.innerText = 'Guess the word';
+    wordGroup.appendChild(wordLabel)
+
+    const wordInput = document.createElement('input');
+    wordInput.setAttribute('id', 'guess-word');
+    wordInput.setAttribute('type', 'text');
+    wordInput.setAttribute('minlength', '1');
+    wordInput.setAttribute('class', 'form-control');
+    wordInput.setAttribute('placeholder', `Give your best guess`);
+    wordInput.required;         
+    wordInput.addEventListener('keydown', validateWordForm)
+    wordGroup.appendChild(wordInput);
+
+    guessing.appendChild(form);
+
+}
+
+validateWordForm = (e) => {
+    guessing.innerText = ''
+
+    if (e.key === 'Enter') {
+        if (e.target.value.toLowerCase() === newWord.join('').toLowerCase()) {
+            const congrats = document.createElement('p');
+            congrats.setAttribute('class', 'lead');
+            congrats.innerText = `Congratulations, you guessed it! The word was ${e.target.value.toUpperCase()}!`
+            guessing.appendChild(congrats)
+        } else {
+            const lost = document.createElement('p');
+            lost.setAttribute('class', 'lead');
+            lost.innerText = `I'm sorry, ${e.target.value.toUpperCase()} was <i>not</i> the right answer. You don't win this round.`
+            guessing.appendChild(lost);
+        }
+    }
 }
 
 // START GAME
