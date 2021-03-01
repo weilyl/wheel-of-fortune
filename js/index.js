@@ -36,6 +36,12 @@ function sessionStart() {
     const calculatedCardWidth = (100/numLetters)-1;
     const defaultFontSize = 6;
     const calculatedFontSize = (90/numLetters)-1
+    const cardWidth = defaultCardWidth > calculatedCardWidth ? `${calculatedCardWidth}vw`: `${defaultCardWidth}vw`;
+    const cardFontSize = defaultFontSize > calculatedFontSize ? `${calculatedFontSize}vw` : `${defaultFontSize}vw`;
+
+    const rowTop = document.createElement('div');
+    rowTop.setAttribute('class', 'd-flex justify-content-center jumbotron-fluid');
+    screen.appendChild(rowTop)
 
     newWord.forEach((letter, idx) => {
         // create empty card
@@ -43,7 +49,7 @@ function sessionStart() {
         card.setAttribute('class', 'card text-center');
         // 
         // if default bigger than calculated, use default
-        card.style.width = defaultCardWidth > calculatedCardWidth ? `${calculatedCardWidth}vw`: `${defaultCardWidth}vw`;
+        card.style.width = cardWidth;
         card.style.textAlign = 'center';
 
         // span tag as empty card body
@@ -52,7 +58,7 @@ function sessionStart() {
         blank.setAttribute('class', `blank letter ${letter} card-body`)
         blank.innerText = '_'
         blank.style.padding = '5px';
-        blank.style.fontSize = defaultFontSize > calculatedFontSize ? `${calculatedFontSize}vw` : `${defaultFontSize}vw`;
+        blank.style.fontSize = cardFontSize
         blank.style.color = 'rgba(0, 0, 0, 0)';
 
         card.appendChild(blank)
@@ -68,6 +74,7 @@ function createTile(int) {
     // element.style.filter = `url('#teal-lightgreen')`;
     // element.style.filter = `url('#teal-white')`;
     // while int > 0 append to screen
+    
 }
 
 const interval = 550;
