@@ -284,7 +284,11 @@ validateLetterForm = (e) => {
     })
     
     if (valid.every(validity => validity === true) && valid.length === guessForms.length) {
-        console.log('submit that form!')
+        const submitPrompt = document.createElement('p');
+        submitPrompt.setAttribute('class', 'lead row');
+        submitPrompt.innerText = `Hit 'ENTER' to submit your guesses`
+        guessing.appendChild(submitPrompt)
+        
         function submitLettersForm (e) {
             e.stopPropagation();
             e.preventDefault();
