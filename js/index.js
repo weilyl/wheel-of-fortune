@@ -399,9 +399,8 @@ validateWordForm = (e) => {
     if (e.key === 'Enter') {
         
         if (e.target.value.toLowerCase() === newWord.join('').toLowerCase()) {
+            e.stopPropagation();
             e.preventDefault();
-
-            // guessing.innerText='';
             
             const correctWord = e.target.value.split('');
             console.log(correctWord, e.target.value.length)
@@ -419,6 +418,7 @@ validateWordForm = (e) => {
             })
             
             setTimeout(()=> {
+                guessing.innerText='';
                 const congrats = document.createElement('p');
                 congrats.setAttribute('class', 'lead');
                 congrats.innerText = `Congratulations, you guessed it! The word was ${e.target.value.toUpperCase()}!`
