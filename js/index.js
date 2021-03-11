@@ -85,7 +85,7 @@ let guessedWord;
 // https://stackoverflow.com/questions/44771741/regex-any-alphabet-except-e
 
 // button starts gameplay
-newGame = (e) => {
+const newGame = (e) => {
     
     startButton.style.display = 'none'
     
@@ -132,7 +132,7 @@ newGame = (e) => {
 }
 
 // guess letter after RSTLNE
-openGuessForm = () => {
+const openGuessForm = () => {
     const numConsonants = 3;
     const numVowels = 1;
     const form = document.createElement('form');
@@ -220,7 +220,7 @@ openGuessForm = () => {
 
 }
 
-validateLetterGuess = (e) => {
+const validateLetterGuess = (e) => {
     if (e.key.length === 1) {
 
         if(e.target.id.includes('consonant')) {
@@ -251,7 +251,7 @@ validateLetterGuess = (e) => {
     
 }
 
-validateLetterForm = (e) => {
+const validateLetterForm = (e) => {
     let unique = true;
     const counter = {};
     for (let i = 0; i < guessedLetters.length; i++) {
@@ -372,7 +372,7 @@ validateLetterForm = (e) => {
     }
 }
 
-openGuessWord = (e) => {
+const openGuessWord = (e) => {
     guessing.innerText = ''
     const form = document.createElement('form');
     form.setAttribute('class', 'guess-word-form');
@@ -401,7 +401,7 @@ openGuessWord = (e) => {
 
 }
 
-validateWordForm = (e) => {
+const validateWordForm = (e) => {
     if (e.key === 'Enter') {
         
         if (e.target.value.toLowerCase() === newWord.join('').toLowerCase()) {
