@@ -1,3 +1,19 @@
+# About this Project
+This doesn't mimic the entire Wheel of Fortune game, but just the Bonus Round.
+
+It is based on an assignment from The Marcy Lab School Breakthrough Fellowship. 
+
+I am refactoring my 2021 spaghetti code using class-based design to exercise my systems-level design muscles (even though it is just frontend for now).
+
+# The Plan
+### MVP:
+Refactor all current features using classes
+
+### Stretch goals:
+1. Replace hard-coded word list with a language API.
+2. Create rules to filter out words for more challenging gameplay.
+3. Add tooltip before/after game end (TBD - before would be for hints, after would be to preserve current gameplay experience) to offer etymology, definitions, usage in a sentence for curious players. 
+
 # Lesson 4: Putting it All Together
 
 For this lesson, we're going to build on everything you've learned during this unit by building a simplified version of America's favorite game show: Wheel of Fortune! Here's how it will work.
