@@ -4,21 +4,19 @@ const main = document.createElement('div')
 main.setAttribute('id', "screen");
 main.setAttribute('class', 'row d-flex justify-content-center jumbotron-fluid');
 main.style.textAlign = 'center';
-// main.style.width = '1rem'
 main.style.padding = '20px 0'
 main.style.margin = '10px'
-const rowTop = document.createElement('div');
-rowTop.setAttribute('class', 'd-flex justify-content-center')
 body.appendChild(main)
+
 let screen = document.getElementById('screen');
 let guessing = document.createElement('section');
 guessing.setAttribute('class', 'container d-flex justify-content-center')
 body.appendChild(guessing)
+
+// create footer for RSTLNE
 const known = document.createElement('footer');
 known.setAttribute('class', 'fixed-bottom row mx-0 pb-5')
 body.appendChild(known);
-body.style.backgroundImage = "url('../assets/305-3-59733_wheel-of-fortune-blank.png')"
-body.style.backgroundPosition = 'cover'
 
 // game defaults to a new bonus round
 
@@ -451,3 +449,10 @@ const validateWordForm = (e) => {
 // START GAME
 let startButton = document.getElementById('start')
 startButton.addEventListener('click', newGame)
+
+// HELPERS 
+function setDOMAttrs(ele, attrs) {
+    for (var attr in attrs) {
+        ele.setAttribute(attr, attrs[attr])
+    }
+}
