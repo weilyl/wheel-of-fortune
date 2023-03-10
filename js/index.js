@@ -1,19 +1,18 @@
-// create playable space
+// Create playable space
 const body = document.body
 const main = document.createElement('div')
-main.setAttribute('id', "screen");
 main.setAttribute('class', 'row d-flex justify-content-center jumbotron-fluid');
 main.style.textAlign = 'center';
 main.style.padding = '20px 0'
 main.style.margin = '10px'
 body.appendChild(main)
 
-let screen = document.getElementById('screen');
+// Create section to input & validate guesses
 let guessing = document.createElement('section');
 guessing.setAttribute('class', 'container d-flex justify-content-center')
 body.appendChild(guessing)
 
-// create footer for RSTLNE
+// Create footer for RSTLNE
 const known = document.createElement('footer');
 known.setAttribute('class', 'fixed-bottom row mx-0 pb-5')
 body.appendChild(known);
@@ -59,7 +58,7 @@ function sessionStart() {
         blank.style.color = 'rgba(0, 0, 0, 0)';
 
         card.appendChild(blank)
-        screen.appendChild(card)
+        main.appendChild(card)
     })
      
 }
@@ -70,7 +69,7 @@ function createTile(int) {
     // https://css-tricks.com/almanac/properties/f/filter/
     // element.style.filter = `url('#teal-lightgreen')`;
     // element.style.filter = `url('#teal-white')`;
-    // while int > 0 append to screen
+    // while int > 0 append to main
 }
 
 const interval = 550;
