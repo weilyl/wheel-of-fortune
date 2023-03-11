@@ -2,9 +2,16 @@
 const body = document.body
 const main = document.createElement('div')
 main.setAttribute('class', 'row d-flex justify-content-center jumbotron-fluid');
-main.style.textAlign = 'center';
-main.style.padding = '20px 0'
-main.style.margin = '10px'
+const mainStyle = {
+    textAlign: 'center',
+    padding: '20px 0',
+    margin: '10px'
+}
+setStyle(main, mainStyle)
+console.log(main.style)
+// main.style.textAlign = 'center'
+// main.style.padding = '20px 0'
+// main.style.margin = '10px'
 body.appendChild(main)
 
 // Create section to input & validate guesses
@@ -17,59 +24,16 @@ const known = document.createElement('footer');
 known.setAttribute('class', 'fixed-bottom row mx-0 pb-5')
 body.appendChild(known);
 
-// game defaults to a new bonus round
-
-let newWord = getRandomWord().split('');
+// Game defaults to a new bonus round
+const newWord = getRandomWord().split('');
 document.onload = sessionStart()
 
 function sessionStart() {
 
-    const button = document.createElement('button');
-    button.innerText = 'Start Bonus Round'
-    button.setAttribute('id', 'start')
-    button.setAttribute('type', 'button')
-    button.setAttribute('class', 'btn btn-success')
-    button.style.margin = '20px'
-    guessing.appendChild(button)
+    createStartButton()
 
-    let numLetters = newWord.length;
-    const defaultCardWidth = 7.5;
-    // calculated in case a word is REALLY long
-    const calculatedCardWidth = (100/numLetters)-1;
-    const defaultFontSize = 6;
-    const calculatedFontSize = (90/numLetters)-1
-
-    newWord.forEach((letter, idx) => {
-        // create empty card
-        const card = document.createElement('div');
-        card.setAttribute('class', 'card text-center');
-        // 
-        // if default bigger than calculated, use default
-        card.style.width = defaultCardWidth > calculatedCardWidth ? `${calculatedCardWidth}vw`: `${defaultCardWidth}vw`;
-        card.style.textAlign = 'center';
-
-        // span tag as empty card body
-        const blank = document.createElement('span');
-        blank.setAttribute('id', `${idx}`);
-        blank.setAttribute('class', `blank letter ${letter} card-body`)
-        blank.innerText = '_'
-        blank.style.padding = '5px';
-        blank.style.fontSize = defaultFontSize > calculatedFontSize ? `${calculatedFontSize}vw` : `${defaultFontSize}vw`;
-        blank.style.color = 'rgba(0, 0, 0, 0)';
-
-        card.appendChild(blank)
-        main.appendChild(card)
-    })
+    createTiles()
      
-}
-// create tile
-function createTile(int) {
-    // create card
-    // card background = logo
-    // https://css-tricks.com/almanac/properties/f/filter/
-    // element.style.filter = `url('#teal-lightgreen')`;
-    // element.style.filter = `url('#teal-white')`;
-    // while int > 0 append to main
 }
 
 const interval = 550;
@@ -78,8 +42,6 @@ const rstlneStr = 'rstlne';
 const consonantRegex = new RegExp(`(?:(?![${vowelsStr+rstlneStr}])[a-z])`, `i`)
 const vowelRegex = new RegExp(`(?:(?![${rstlneStr}])[${vowelsStr}])`, `i`)
 const guessedLetters = [];
-let guessedWord;
-// https://stackoverflow.com/questions/44771741/regex-any-alphabet-except-e
 
 // button starts gameplay
 const newGame = (e) => {
@@ -224,9 +186,6 @@ const validateLetterGuess = (e) => {
             if (consonantRegex.test(e.key)) {
                 e.target.value = e.key.toUpperCase();
                 guessedLetters.push(e.key.toLowerCase());
-                console.log(typeof e.key);
-                console.log(typeof e.target.value);
-                console.log(guessedLetters, e.key, e.target.value);
                 e.target.setAttribute('readonly', 'true');
                 e.target.setAttribute('disabled', "true");
             } else {
@@ -277,7 +236,6 @@ const validateLetterForm = (e) => {
     }
     const valid = [];
     guessForms.forEach(form => {
-        // console.log(form.querySelector('input').attributes)
         if ('disabled' in form.querySelector('input').attributes) {
             valid.push(true);
         }
@@ -289,7 +247,6 @@ const validateLetterForm = (e) => {
         submitPrompt.innerText = `Hit 'ENTER' to submit your guesses`
         const promptDiv = document.createElement('div')
         promptDiv.setAttribute('class', 'row jumbotron-fluid');
-        // promptDiv.appendChild(submitPrompt)
         guessing.appendChild(submitPrompt)
         
         function submitLettersForm (e) {
@@ -446,7 +403,7 @@ const validateWordForm = (e) => {
 }
 
 // START GAME
-let startButton = document.getElementById('start')
+const startButton = document.getElementById('start')
 startButton.addEventListener('click', newGame)
 
 // HELPERS 
@@ -455,3 +412,91 @@ function setDOMAttrs(ele, attrs) {
         ele.setAttribute(attr, attrs[attr])
     }
 }
+
+function setStyle(ele, attrs) {
+    for (var attr in attrs) {
+        ele.style[attr] = attrs[attr]
+    }
+}
+
+function createStartButton(){
+    var attrs = {
+        id: 'start',
+        type: 'button',
+        class: 'btn btn-success'
+    }
+
+    const button = document.createElement('button');
+    button.innerText = 'Start Bonus Round'
+    setDOMAttrs(button, attrs)
+    button.style.margin = '20px'
+    guessing.appendChild(button)
+}
+
+function createTile(attrs) {
+    // create empty card
+    const card = document.createElement('div');
+    card.setAttribute('class', 'card text-center');
+    setStyle(card, {width: attrs.cardWidth, textAlign: 'center'})
+
+    // span tag as empty card body
+    const blank = document.createElement('span');
+    blank.setAttribute('id', `${attrs.idx}`);
+    blank.setAttribute('class', `blank letter ${attrs.letter} card-body`)
+    blank.innerText = '_'
+    setStyle(blank, {
+        padding: '5px',
+        fontSize: attrs.fontSize,
+        color: 'rgba(0, 0, 0, 0)'
+    })
+
+    card.appendChild(blank)
+    main.appendChild(card)
+}
+
+function createTiles(){
+    let numLetters = newWord.length;
+    const defaultCardWidth = 7.5;
+    const calculatedCardWidth = (100/numLetters)-1;
+    const defaultFontSize = 6;
+    const calculatedFontSize = (90/numLetters)-1
+
+    newWord.forEach((letter, idx) => {
+
+        const tileAttributes = {
+            letter: letter,
+            idx: idx,
+            // If default bigger than calculated, use default
+            cardWidth: defaultCardWidth > calculatedCardWidth ? `${calculatedCardWidth}vw`: `${defaultCardWidth}vw`,
+            fontSize: defaultFontSize > calculatedFontSize ? `${calculatedFontSize}vw` : `${defaultFontSize}vw`
+        }
+
+        createTile(tileAttributes)
+    })
+}
+
+// unused
+function createGameContainers(){
+    // Create playable space
+    const body = document.body
+    const main = document.createElement('div')
+    main.setAttribute('class', 'row d-flex justify-content-center jumbotron-fluid');
+    const mainStyle = {
+        textAlign: 'center',
+        padding: '20px 0',
+        margin: '10px'
+    }
+    setStyle(main, mainStyle)
+    body.appendChild(main)
+
+    // Create section to input & validate guesses
+    let guessing = document.createElement('section');
+    guessing.setAttribute('class', 'container d-flex justify-content-center')
+    body.appendChild(guessing)
+
+    // Create footer for RSTLNE
+    const known = document.createElement('footer');
+    known.setAttribute('class', 'fixed-bottom row mx-0 pb-5')
+    body.appendChild(known);
+}
+
