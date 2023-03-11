@@ -220,7 +220,7 @@ const validateLetterForm = (e) => {
                                 } else {
                                     setTimeout(()=> {
                                         finalMessage(newWord.join(''), true)
-                                    }, idx*3*interval)
+                                    }, idx)
                                 }
                             },idx*3*interval)
                         }
