@@ -34,7 +34,7 @@ freebies.setAttribute('class', 'col pl-2 ml-auto text-left')
 known.appendChild(freebies)
 
 // Game defaults to a new bonus round
-const newWord = getRandomWord().split('');
+const newWord = 'hello'.split('')   //getRandomWord().split('');
 document.onload = sessionStart()
 
 function sessionStart() {
@@ -185,13 +185,7 @@ const validateLetterForm = (e) => {
                 submittedLetters.setAttribute('class', 'text-right col pr-2 mr-auto')
                 known.appendChild(submittedLetters)
 
-                const correctLetters = [];
-                newWord.forEach((chc) => {
-                    if(guessedLetters.includes(chc.toLowerCase())) {
-                        correctLetters.push(chc)
-                    }
-                }) // why didn't filter work here??
-                console.log('why empty', newWord, guessedLetters, correctLetters)
+                const correctLetters = newWord.filter((chc) => guessedLetters.includes(chc.toLowerCase()))
 
                 if (correctLetters.length >= 1) {
                     correctLetters.forEach((letter, idx) => {
@@ -225,10 +219,7 @@ const validateLetterForm = (e) => {
                                     openGuessWord()
                                 } else {
                                     setTimeout(()=> {
-                                        const congrats = document.createElement('p');
-                                        congrats.setAttribute('class', 'lead');
-                                        congrats.innerText = `Congratulations, you guessed it! The word was ${newWord.join('')}!`
-                                        guessing.appendChild(congrats)
+                                        finalMessage(newWord.join(''), true)
                                     }, idx*3*interval)
                                 }
                             },idx*3*interval)
@@ -242,7 +233,7 @@ const validateLetterForm = (e) => {
                     noGuesses.innerText = 'Sorry, none of your guessed letters were correct. See if you can get the whole word with what you have!'
                     guessing.appendChild(noGuesses);
                     setTimeout(() => {guessing.innerText = ''}, 2050)
-                    setTimeout(openGuessWord, 2550);
+                    setTimeout(openGuessWord, 2051);
                 }
                 this.removeEventListener('keydown', validateLetterForm);
             }
@@ -283,48 +274,49 @@ const openGuessWord = (e) => {
 const validateWordForm = (e) => {
     if (e.key === 'Enter') {
         
-        if (e.target.value.toLowerCase() === newWord.join('').toLowerCase()) {
+        var won = e.target.value.toLowerCase() === newWord.join('').toLowerCase()
+
+        if (won) {
             e.stopPropagation();
             e.preventDefault();
             
             const correctWord = e.target.value.split('');
-            console.log(correctWord, e.target.value.length)
             correctWord.forEach((letter) => {
+                console.log(letter)
                 const final = document.querySelector(`.${letter}.blank`)
-                console.log(final);
                 // remove blank class so duplicate letters appear 
                 // letters appear
-                if(final) {
-                    e.preventDefault();
-                    final.innerText = letter.toUpperCase()
-                    final.style.color = 'black';
-                    final.classList.remove('blank')
-                }
+                // if(final) {
+                e.preventDefault();
+                final.classList.remove('blank')
+                final.innerText = letter.toUpperCase()
+                final.style.color = 'black';
+                // }
             })
             
             setTimeout(()=> {
-                guessing.innerText='';
-                const congrats = document.createElement('p');
-                congrats.setAttribute('class', 'lead');
-                congrats.innerText = `Congratulations, you guessed it! The word was ${e.target.value.toUpperCase()}!`
-                guessing.appendChild(congrats)
-            }, 250)
+                finalMessage(e.target.value, won)
+            }, 250)    
             
-            
-            this.removeEventListener('keydown', submitLettersForm)
-
         } else {
-            guessing.innerText='';
-            const lost = document.createElement('p');
-            lost.setAttribute('class', 'lead');
-            lost.innerText = `I'm sorry, ${e.target.value.toUpperCase()} was NOT the right answer. You don't win this round. The word was ${newWord.join('').toUpperCase()}`
-            guessing.appendChild(lost);
-        
-            this.removeEventListener('keydown', submitLettersForm)
+            finalMessage(e.target.value, won)
         }
     }
-    this.removeEventListener('keydown', validateLettersForm)
+}
+
+
+function finalMessage(guess, isWin){
+    var congrats = `Congratulations, you guessed it! The word was ${guess.toUpperCase()}!`
+
+    var lost = `I'm sorry, ${guess.toUpperCase()} was NOT the right answer. You don't win this round. The word was ${newWord.join('').toUpperCase()}`
+
+    var msgStr = isWin ? congrats : lost
+
     guessing.innerText='';
+    const msgElement = document.createElement('p')
+    msgElement.setAttribute('class', 'lead');
+    msgElement.innerText = msgStr
+    guessing.appendChild(msgElement);
 }
 
 // START GAME
