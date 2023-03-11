@@ -1,3 +1,10 @@
+const interval = 550;
+const vowelsStr = 'aiou';
+const rstlneStr = 'rstlne';
+const consonantRegex = new RegExp(`(?:(?![${vowelsStr+rstlneStr}])[a-z])`, `i`)
+const vowelRegex = new RegExp(`(?:(?![${rstlneStr}])[${vowelsStr}])`, `i`)
+const guessedLetters = [];
+
 // Create playable space
 const body = document.body
 const main = document.createElement('div')
@@ -8,10 +15,6 @@ const mainStyle = {
     margin: '10px'
 }
 setStyle(main, mainStyle)
-console.log(main.style)
-// main.style.textAlign = 'center'
-// main.style.padding = '20px 0'
-// main.style.margin = '10px'
 body.appendChild(main)
 
 // Create section to input & validate guesses
@@ -23,6 +26,12 @@ body.appendChild(guessing)
 const known = document.createElement('footer');
 known.setAttribute('class', 'fixed-bottom row mx-0 pb-5')
 body.appendChild(known);
+
+// show common letters on bottom
+const freebies = document.createElement('h3');
+freebies.innerText = rstlneStr.toUpperCase();
+freebies.setAttribute('class', 'col pl-2 ml-auto text-left')
+known.appendChild(freebies)
 
 // Game defaults to a new bonus round
 const newWord = getRandomWord().split('');
@@ -36,61 +45,17 @@ function sessionStart() {
      
 }
 
-const interval = 550;
-const vowelsStr = 'aiou';
-const rstlneStr = 'rstlne';
-const consonantRegex = new RegExp(`(?:(?![${vowelsStr+rstlneStr}])[a-z])`, `i`)
-const vowelRegex = new RegExp(`(?:(?![${rstlneStr}])[${vowelsStr}])`, `i`)
-const guessedLetters = [];
-
 // button starts gameplay
 const newGame = (e) => {
     
     startButton.style.display = 'none'
-    
-    const rstlne = ['r', 's', 't', 'l', 'n', 'e']  
-    
-    // show common letters on bottom
-    const freebies = document.createElement('h3');
-    freebies.innerText = rstlne.join(' ').toUpperCase();
-    freebies.setAttribute('class', 'col pl-2 ml-auto text-left')
-    known.appendChild(freebies)
-    
-    // common letters appear if present
-    let common = newWord.filter((letter) => rstlne.includes(letter))
-    
-    if (common.length >= 1) {
-        
-        common.forEach((letter, idx) => {
-            const exists = document.querySelector(`.${letter}.blank`)
-            // remove blank class so duplicate letters appear 
-            exists.classList.remove('blank')
-            
-            // light up tiles
-            setTimeout(() => {
-                exists.setAttribute('class', 'badge-light')
-            }, idx*interval);
-
-            // common letters appear
-            setTimeout(()=> {
-                setTimeout(() => {
-                    // light goes away
-                    exists.classList.remove('badge-light')
-                    // letters appear
-                    exists.innerText = letter.toUpperCase()
-                    exists.style.color = 'black';
-                    // exists.classList.remove('blank')
-                }, interval)
-                
-            }, idx * interval);
-        })
-        
-    }
+    showRSTLNETiles()
     openGuessForm();
     
 }
 
-// guess letter after RSTLNE
+
+// Guess letters after RSTLNE
 const openGuessForm = () => {
     const numConsonants = 3;
     const numVowels = 1;
@@ -102,16 +67,18 @@ const openGuessForm = () => {
     letterForm.setAttribute('class', 'row')
     form.appendChild(letterForm)
 
-    function makeFormGroups (cons=3, vowels=1) {
-        // const colSize = 12/(cons+vowels)
+    function createGuessFormGroup(numGuesses, isConsonant){
+        var charType = isConsonant ? 'Consonant' : 'Vowel'
 
-        for (let i = 1; i <= cons; i++) {
-            const consGroup1 = document.createElement('div');
-            consGroup1.setAttribute('class', `form-group col-md`);
+        for (let i = 1; i <= numGuesses; i++) {
+            const formGroup = document.createElement('div');
+            formGroup.setAttribute('class', `form-group col-md`);
 
-            const consLabel1 = document.createElement('label');
-            consLabel1.setAttribute('for', `consonant${i}`)
-            let ith;
+            const formLabel = document.createElement('label');
+            formLabel.setAttribute('for', `${charType}${i}`)
+
+            var ith;
+
             switch (i) {
                 case 1:
                     ith = "First";
@@ -123,88 +90,46 @@ const openGuessForm = () => {
                     ith = "Third";
                     break;
             }
-            consLabel1.innerText = `${ith} Consonant`
-            consGroup1.appendChild(consLabel1);
-        
-            const consInput1 = document.createElement('input');
-            consInput1.setAttribute('type', 'text');
-            consInput1.setAttribute('id', `consonant${i}`);
-            consInput1.setAttribute('maxlength', '1');
-            consInput1.setAttribute('class', 'form-control guess-letter');
-            consInput1.setAttribute('placeholder', `${ith} consonant`);
-            consInput1.required;
-            consInput1.addEventListener('keydown', validateLetterGuess)
-        
-            consGroup1.appendChild(consInput1);
-            letterForm.appendChild(consGroup1);
-        }
 
-        for (let i = 1; i <= vowels; i++) {
-            const vowelGroup1 = document.createElement('div');
-            vowelGroup1.setAttribute('class', `form-group col-md`);
-
-            const vowelLabel1 = document.createElement('label');
-            vowelLabel1.setAttribute('for', `vowel${i}`)
-            let ith;
-            switch (i) {
-                case 1:
-                    ith = "First";
-                    break;
-                case 2:
-                    ith = "Second";
-                    break;
-                case 3:
-                    ith = "Third";
-                    break;
-            }
-            vowelLabel1.innerText = `${ith} Vowel`
-            vowelGroup1.appendChild(vowelLabel1);
+            formLabel.innerText = `${ith} ${charType}`
+            formGroup.appendChild(formLabel);
         
-            const vowelInput1 = document.createElement('input');
-            vowelInput1.setAttribute('type', 'text');
-            vowelInput1.setAttribute('id', `vowel${i}`);
-            vowelInput1.setAttribute('maxlength', '1');
-            vowelInput1.setAttribute('class', 'form-control guess-letter');
-            vowelInput1.setAttribute('placeholder', `${ith} vowel`);
-            vowelInput1.required;         
-            vowelInput1.addEventListener('keydown', validateLetterGuess)
-            vowelGroup1.appendChild(vowelInput1);
-            letterForm.appendChild(vowelGroup1);
+            const formInput = document.createElement('input');
+            setDOMAttrs(formInput, {
+                type: 'text',
+                id: `${charType.toLowerCase()}${i}`,
+                maxlength: '1',
+                class: 'form-control guess-letter',
+                placeholder: `${ith} ${charType.toLowerCase()}`
+            })
+            formInput.required;
+            formInput.addEventListener('keydown', validateLetterGuess)
+        
+            formGroup.appendChild(formInput);
+            letterForm.appendChild(formGroup);
         }
     }
- 
-    makeFormGroups(numConsonants, numVowels);
 
+    createGuessFormGroup(numConsonants, true)
+    createGuessFormGroup(numVowels, false)
     guessing.appendChild(form);
 
 }
 
 const validateLetterGuess = (e) => {
+    // Preserve default behavior for Backspace, Enter, Tab
     if (e.key.length === 1) {
+        var re = e.target.id.includes('consonant') ? consonantRegex : vowelRegex
 
-        if(e.target.id.includes('consonant')) {
-            if (consonantRegex.test(e.key)) {
-                e.target.value = e.key.toUpperCase();
-                guessedLetters.push(e.key.toLowerCase());
-                e.target.setAttribute('readonly', 'true');
-                e.target.setAttribute('disabled', "true");
-            } else {
-                e.target.value = 'Try again';
-            }
-        } 
-        
-        else if (e.target.id.includes('vowel')) {
-            if (vowelRegex.test(e.key)) {
-                e.target.value = e.key.toUpperCase();
-                guessedLetters.push(e.key.toLowerCase());
-                e.target.setAttribute('readonly', 'true');
-                e.target.setAttribute('disabled', "true");
-            } else {
-                e.target.value = 'Try again';
-            }
+        if (re.test(e.key)) {
+            e.target.value = e.key.toUpperCase();
+            guessedLetters.push(e.key.toLowerCase());
+            e.target.setAttribute('readonly', 'true');
+            e.target.setAttribute('disabled', "true");
+        } else {
+            e.target.value = 'Try again';
         }
-    }
-    
+    }  
 }
 
 const validateLetterForm = (e) => {
@@ -475,12 +400,47 @@ function createTiles(){
     })
 }
 
+function showRSTLNETiles() {
+    // Letters in RSTLNE appear if present
+    let common = newWord.filter((letter) => rstlneStr.split('').includes(letter))
+    
+    if (common.length >= 1) {
+        
+        common.forEach((letter, idx) => {
+            const exists = document.querySelector(`.${letter}.blank`)
+            // remove blank class so duplicate letters appear 
+            exists.classList.remove('blank')
+            
+            // light up tiles
+            setTimeout(() => {
+                exists.setAttribute('class', 'badge-light')
+            }, idx*interval);
+
+            // common letters appear
+            setTimeout(()=> {
+                setTimeout(() => {
+                    // light goes away
+                    exists.classList.remove('badge-light')
+                    // letters appear
+                    exists.innerText = letter.toUpperCase()
+                    exists.style.color = 'black';
+                }, interval)
+                
+            }, idx * interval);
+
+        })
+        
+    }
+}
+
+
 // unused
 function createGameContainers(){
     // Create playable space
     const body = document.body
     const main = document.createElement('div')
     main.setAttribute('class', 'row d-flex justify-content-center jumbotron-fluid');
+
     const mainStyle = {
         textAlign: 'center',
         padding: '20px 0',
