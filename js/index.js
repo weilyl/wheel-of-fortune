@@ -68,7 +68,7 @@ const openGuessForm = () => {
     form.appendChild(letterForm)
 
     function createGuessFormGroup(numGuesses, isConsonant){
-        var charType = isConsonant ? 'Consonant' : 'Vowel'
+        var charType = isConsonant ? 'consonant' : 'vowel'
 
         for (let i = 1; i <= numGuesses; i++) {
             const formGroup = document.createElement('div');
@@ -97,10 +97,10 @@ const openGuessForm = () => {
             const formInput = document.createElement('input');
             setDOMAttrs(formInput, {
                 type: 'text',
-                id: `${charType.toLowerCase()}${i}`,
+                id: `${charType}${i}`,
                 maxlength: '1',
                 class: 'form-control guess-letter',
-                placeholder: `${ith} ${charType.toLowerCase()}`
+                placeholder: `${ith} ${charType}`
             })
             formInput.required;
             formInput.addEventListener('keydown', validateLetterGuess)
@@ -125,7 +125,7 @@ const validateLetterGuess = (e) => {
             e.target.value = e.key.toUpperCase();
             guessedLetters.push(e.key.toLowerCase());
             e.target.setAttribute('readonly', 'true');
-            e.target.setAttribute('disabled', "true");
+            e.target.setAttribute('disabled', 'true');
         } else {
             e.target.value = 'Try again';
         }
@@ -149,6 +149,7 @@ const validateLetterForm = (e) => {
     
     const guessForms = document.querySelector('.guess-letters').querySelector('.row').querySelectorAll('.form-group')
     if (unique === false) {
+
         guessForms.forEach(form => {
             if (counter[form.querySelector('input').value.toLowerCase()] > 1){
                 counter[form.querySelector('input').value.toLowerCase()]--
@@ -159,6 +160,7 @@ const validateLetterForm = (e) => {
             }
         })
     }
+    
     const valid = [];
     guessForms.forEach(form => {
         if ('disabled' in form.querySelector('input').attributes) {
@@ -246,7 +248,6 @@ const openGuessWord = (e) => {
     guessing.innerText = ''
     const form = document.createElement('form');
     form.setAttribute('class', 'guess-word-form');
-    // form.addEventListener('keydown', validateWordForm);
 
     const wordGroup = document.createElement('div');
     wordGroup.setAttribute('class', `form-group col-md`);
@@ -258,11 +259,13 @@ const openGuessWord = (e) => {
     wordGroup.appendChild(wordLabel)
 
     const wordInput = document.createElement('input');
-    wordInput.setAttribute('id', 'guess-word');
-    wordInput.setAttribute('type', 'text');
-    wordInput.setAttribute('minlength', '1');
-    wordInput.setAttribute('class', 'form-control');
-    wordInput.setAttribute('placeholder', `Give your best guess`);
+    setDOMAttrs(wordInput, {
+        id: 'guess-word',
+        class: 'form-control',
+        type: 'text',
+        minlength: '1',
+        placeholder: `Give your best guess`
+    })
     wordInput.required;         
     wordInput.addEventListener('keydown', validateWordForm)
     wordGroup.appendChild(wordInput);
@@ -282,42 +285,21 @@ const validateWordForm = (e) => {
             
             const correctWord = e.target.value.split('');
             correctWord.forEach((letter) => {
-                console.log(letter)
                 const final = document.querySelector(`.${letter}.blank`)
-                // remove blank class so duplicate letters appear 
-                // letters appear
-                // if(final) {
-                e.preventDefault();
-                final.classList.remove('blank')
-                final.innerText = letter.toUpperCase()
-                final.style.color = 'black';
-                // }
+                // .blank class has already been removed from previously guessed/given tiles
+                if(final) {
+                    // Remove blank class so duplicate letters appear 
+                    final.classList.remove('blank')
+                    final.innerText = letter.toUpperCase()
+                    final.style.color = 'black';
+                }
             })
-            
-            setTimeout(()=> {
-                finalMessage(e.target.value, won)
-            }, 250)    
-            
-        } else {
-            finalMessage(e.target.value, won)
-        }
+        } 
+
+        finalMessage(e.target.value, won)
     }
 }
 
-
-function finalMessage(guess, isWin){
-    var congrats = `Congratulations, you guessed it! The word was ${guess.toUpperCase()}!`
-
-    var lost = `I'm sorry, ${guess.toUpperCase()} was NOT the right answer. You don't win this round. The word was ${newWord.join('').toUpperCase()}`
-
-    var msgStr = isWin ? congrats : lost
-
-    guessing.innerText='';
-    const msgElement = document.createElement('p')
-    msgElement.setAttribute('class', 'lead');
-    msgElement.innerText = msgStr
-    guessing.appendChild(msgElement);
-}
 
 // START GAME
 const startButton = document.getElementById('start')
@@ -351,15 +333,17 @@ function createStartButton(){
 }
 
 function createTile(attrs) {
-    // create empty card
+    // Create empty card
     const card = document.createElement('div');
     card.setAttribute('class', 'card text-center');
     setStyle(card, {width: attrs.cardWidth, textAlign: 'center'})
 
     // span tag as empty card body
     const blank = document.createElement('span');
-    blank.setAttribute('id', `${attrs.idx}`);
-    blank.setAttribute('class', `blank letter ${attrs.letter} card-body`)
+    setDOMAttrs(blank, {
+        id: `${attrs.idx}`,
+        class: `blank letter ${attrs.letter} card-body`
+    })
     blank.innerText = '_'
     setStyle(blank, {
         padding: '5px',
@@ -396,59 +380,42 @@ function showRSTLNETiles() {
     // Letters in RSTLNE appear if present
     let common = newWord.filter((letter) => rstlneStr.split('').includes(letter))
     
-    if (common.length >= 1) {
+    if (common.length < 1 ) return
+
+    common.forEach((letter, idx) => {
+        const exists = document.querySelector(`.${letter}.blank`)
+        // Remove blank class so duplicate letters appear 
+        exists.classList.remove('blank')
         
-        common.forEach((letter, idx) => {
-            const exists = document.querySelector(`.${letter}.blank`)
-            // remove blank class so duplicate letters appear 
-            exists.classList.remove('blank')
-            
-            // light up tiles
+        // Light up tiles
+        setTimeout(() => {
+            exists.setAttribute('class', 'badge-light')
+        }, idx*interval);
+
+        // Common letters appear
+        setTimeout(()=> {
             setTimeout(() => {
-                exists.setAttribute('class', 'badge-light')
-            }, idx*interval);
-
-            // common letters appear
-            setTimeout(()=> {
-                setTimeout(() => {
-                    // light goes away
-                    exists.classList.remove('badge-light')
-                    // letters appear
-                    exists.innerText = letter.toUpperCase()
-                    exists.style.color = 'black';
-                }, interval)
-                
-            }, idx * interval);
-
-        })
+                // Light goes away
+                exists.classList.remove('badge-light')
+                // Letters appear
+                exists.innerText = letter.toUpperCase()
+                exists.style.color = 'black';
+            }, interval)
+        }, idx * interval);
+    })
         
-    }
 }
 
+function finalMessage(guess, isWin){
+    var congrats = `Congratulations, you guessed it! The word was ${guess.toUpperCase()}!`
 
-// unused
-function createGameContainers(){
-    // Create playable space
-    const body = document.body
-    const main = document.createElement('div')
-    main.setAttribute('class', 'row d-flex justify-content-center jumbotron-fluid');
+    var lost = `I'm sorry, ${guess.toUpperCase()} was NOT the right answer. You don't win this round. The word was ${newWord.join('').toUpperCase()}`
 
-    const mainStyle = {
-        textAlign: 'center',
-        padding: '20px 0',
-        margin: '10px'
-    }
-    setStyle(main, mainStyle)
-    body.appendChild(main)
+    var msgStr = isWin ? congrats : lost
 
-    // Create section to input & validate guesses
-    let guessing = document.createElement('section');
-    guessing.setAttribute('class', 'container d-flex justify-content-center')
-    body.appendChild(guessing)
-
-    // Create footer for RSTLNE
-    const known = document.createElement('footer');
-    known.setAttribute('class', 'fixed-bottom row mx-0 pb-5')
-    body.appendChild(known);
+    guessing.innerText='';
+    const msgElement = document.createElement('p')
+    msgElement.setAttribute('class', 'lead');
+    msgElement.innerText = msgStr
+    guessing.appendChild(msgElement);
 }
-
