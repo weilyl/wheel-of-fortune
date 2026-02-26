@@ -1,3 +1,6 @@
+# Play now
+https://weilyl.github.io/wheel-of-fortune/ 
+
 # Lesson 4: Putting it All Together
 
 For this lesson, we're going to build on everything you've learned during this unit by building a simplified version of America's favorite game show: Wheel of Fortune! Here's how it will work.
